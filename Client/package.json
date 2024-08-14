@@ -1,0 +1,48 @@
+{
+  "name": "farmerapp",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.4.19",
+    "crypto-js": "^4.2.0",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.13.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.2.1",
+    "react-router-dom": "^6.25.1",
+    "tailwindcss": "^3.4.7"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.3",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.7",
+    "vite": "^5.3.4"
+  },
+  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
+  "main": "postcss.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/naveen-2111-dev/Farm.-hardhat.web3.git"
+  },
+  "keywords": [
+    "farmer"
+  ],
+  "author": "naveen rajan m",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/naveen-2111-dev/Farm.-hardhat.web3/issues"
+  },
+  "homepage": "https://github.com/naveen-2111-dev/Farm.-hardhat.web3#readme"
+}

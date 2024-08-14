@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.inputBox{
+    @apply p-2 lg:p-3 border-none outline-none  bg-nor rounded-md text-gray-400 
+}
+
+.inputBoxs{
+    @apply lg:p-3 border-none outline-none  bg-bg rounded-md text-gray-400 
+}
