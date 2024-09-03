@@ -1,3 +1,7 @@
 .box{
     box-shadow: 2px 2px 40px #0f0f0f;
 }
+
+.image {
+  mix-blend-mode: multiply;
+}
