@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { ethers, parseEther } from "ethers";
+import { ethers, getAddress, parseEther, toNumber } from "ethers";
 import Abi from "../Json/contract.json";
 import CryptoJS from "crypto-js";
 
@@ -128,18 +128,48 @@ export const ContextProvider = ({ children }) => {
   // contract interaction
   //
   //
-  // 
-  
+  //
+
   //
   //
   //
   // GetProducts
+  // string memory _image,
+  //       string memory _Desc,
+  //       uint256 _stock,
+  //       string memory _title,
+  //       uint256 _price,
+  //       string memory _typeofprod
+
+  // id: productCount,
+  //           Image: _image,
+  //           Description: _Desc,
+  //           Stock: _stock,
+  //           Title: _title,
+  //           Price: _price,
+  //           Farmer: payable(msg.sender),
+  //           TypeOfProduct: _typeofprod,
+  //           StockLeft: _stock
 
   const AllProducts = async () => {
     try {
       if (contract) {
         const Products = await contract.GetAllProducts();
-        return Products;
+        const productData = Products.map((productProxy, i) => ({
+          // Assuming the product proxy contains an array with the required data
+          description: productProxy.Description,
+          stock: productProxy.Stock,
+          title: productProxy.Title,
+          price: parseEther(productProxy.Price.toString()),
+          address: productProxy.Farmer,
+          ProductType: productProxy.TypeOfProduct,
+          stockleft: productProxy.StockLeft,
+          image: productProxy.Image,
+          productId: productProxy.id || i
+        }));
+
+        return productData;
+
       } else {
         console.log("contract not initialized from Allprod line 134");
       }
@@ -156,11 +186,13 @@ export const ContextProvider = ({ children }) => {
   //
   // Buy products
 
-  const BuyerOfProduct = async (_idOfProduct, _kilogram) => {
+  const BuyerOfProduct = async (_idOfProduct, _kilogram, amount) => {
     if (contract) {
       try {
         await provider.send("eth_requestAccounts", []);
-        const transaction = await contract.Buyer(_idOfProduct, _kilogram);
+        const transaction = await contract.Buyer(_idOfProduct, _kilogram, {
+          value: amount,
+        });
         await transaction.wait();
         console.log("product bought succesfully");
       } catch (err) {
