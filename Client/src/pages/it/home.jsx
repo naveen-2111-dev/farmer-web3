@@ -10,7 +10,7 @@ const Home = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [kg, setKg] = useState(0);
+  const [kg, setKg] = useState(1);
   console.log(products);
 
   useEffect(() => {
@@ -67,7 +67,7 @@ const Home = () => {
                       onClick={() =>
                         BuyerOfProduct(
                           prod.productId,
-                          kg,
+                          kg, 
                           ethers.parseEther(
                             (kg * parseFloat(prod.price)).toString()
                           )
@@ -80,6 +80,7 @@ const Home = () => {
                     <input
                       type="text"
                       className="appearance-none border-2 border-blue-500 p-2 w-20 ml-4 inputBoxs"
+                      value={1}
                       onChange={(e) => setKg(e.target.value)}
                     />
                   </div>
