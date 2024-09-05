@@ -8,7 +8,10 @@ const ContraContext = createContext();
 export const ContextProvider = ({ children }) => {
   const [isMetamaskInstalled, setIsMetamaskInstalled] = useState(true);
   const [pop, setPop] = useState(true);
+  const [SideBarState, setSideBarState] = useState(false);
+  const [Side, setSide] = useState(false);
   const [contract, setContract] = useState("");
+  const [Address, setAddress] = useState("");
   const [provider, setProvider] = useState("");
   const [signer, setSigner] = useState("");
   const [isConnected, setIsConnected] = useState(false);
@@ -57,8 +60,10 @@ export const ContextProvider = ({ children }) => {
         await window.ethereum.request({ method: "eth_requestAccounts" });
         const provider = new ethers.BrowserProvider(window.ethereum);
         const signers = await provider.getSigner();
+        const AddressOfSigner = await signers.getAddress();
         setIsConnected(true);
         setSigner(signers);
+        setAddress(AddressOfSigner);
         setProvider(provider);
 
         storeValuesInLocalStorage();
@@ -156,7 +161,6 @@ export const ContextProvider = ({ children }) => {
       if (contract) {
         const Products = await contract.GetAllProducts();
         const productData = Products.map((productProxy, i) => ({
-          // Assuming the product proxy contains an array with the required data
           description: productProxy.Description,
           stock: productProxy.Stock,
           title: productProxy.Title,
@@ -165,11 +169,10 @@ export const ContextProvider = ({ children }) => {
           ProductType: productProxy.TypeOfProduct,
           stockleft: productProxy.StockLeft,
           image: productProxy.Image,
-          productId: productProxy.id || i
+          productId: productProxy.id || i,
         }));
 
         return productData;
-
       } else {
         console.log("contract not initialized from Allprod line 134");
       }
@@ -194,12 +197,25 @@ export const ContextProvider = ({ children }) => {
           value: amount,
         });
         await transaction.wait();
-        console.log("product bought succesfully");
+        alert("product bought successfully !!");
       } catch (err) {
         console.error("from context line 158", err);
       }
     } else {
       console.log("contract not initialized line 165");
+    }
+  };
+
+  const GetMyProducts = async () => {
+    try {
+      const AllProductsInBlock = await AllProducts();
+      const myProducts = AllProductsInBlock.filter(
+        (allprod) => allprod.address === Address
+      );
+
+      return myProducts;
+    } catch (err) {
+      console.log("error in gettiing products error from context", err);
     }
   };
 
@@ -209,6 +225,11 @@ export const ContextProvider = ({ children }) => {
     AddProductss,
     AllProducts,
     BuyerOfProduct,
+    SideBarState,
+    setSideBarState,
+    Side,
+    setSide,
+    GetMyProducts,
   };
 
   return (

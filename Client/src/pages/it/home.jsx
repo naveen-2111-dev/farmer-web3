@@ -14,6 +14,11 @@ const Home = () => {
   const [kg, setKg] = useState(1);
   console.log(products);
 
+  const HandleChange = (e) => {
+    const values = e.target.value;
+    setKg(values);
+  };
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -30,7 +35,14 @@ const Home = () => {
   }, [AllProducts]);
 
   if (loading) {
-    return <div className="text-gray-400">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-full">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-blue-500 border-solid border-t-transparent rounded-full animate-spin"></div>
+          <div className="text-gray-500 text-lg font-semibold">Loading...</div>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
@@ -38,7 +50,7 @@ const Home = () => {
   }
 
   const formatPrice = (price) => {
-    if (!price) return "0";
+    if (!price) return 1;
     const priceInEther = ethers.formatEther(price);
     const Eth = priceInEther / 10 ** 18;
     return Number(Eth).toString();
@@ -66,15 +78,13 @@ const Home = () => {
                     <div className="flex items-center justify-between w-full mb-4">
                       <button
                         className="bg-blue-500 text-white py-2 px-4 rounded"
-                        onClick={() =>
-                          BuyerOfProduct(
-                            prod.productId,
-                            kg,
-                            ethers.parseEther(
-                              (kg * parseFloat(prod.price)).toString()
-                            )
-                          )
-                        }
+                        onClick={() => {
+                          const priceInWei = ethers.parseEther(
+                            formatPrice(prod.price)
+                          );
+
+                          BuyerOfProduct(prod.productId, kg, priceInWei);
+                        }}
                       >
                         Buy
                       </button>
@@ -82,8 +92,8 @@ const Home = () => {
                       <input
                         type="text"
                         className="appearance-none border-2 border-blue-500 p-2 w-20 ml-4 inputBoxs"
-                        value={kg}
-                        onChange={(e) => setKg(e.target.value)}
+                        placeholder="kg"
+                        onChange={HandleChange}
                       />
                     </div>
                     <span className="text-lg font-semibold">
@@ -97,7 +107,11 @@ const Home = () => {
         ) : (
           <div className="flex items-center justify-center min-h-screen bg-transparent">
             <div className="text-center p-4 bg-transparent shadow-lg rounded-lg">
-              <img src={Farm} alt="Farm" className="mx-auto bg-transparent mb-20" />
+              <img
+                src={Farm}
+                alt="Farm"
+                className="mx-auto bg-transparent mb-20"
+              />
               <h1 className="text-xl lg:text-2xl font-semibold mb-4 w-40 sm:w-40 lg:w-96 md:w-60">
                 {" "}
                 a direct sales application for farmers
@@ -115,7 +129,10 @@ const Home = () => {
                 </a>
               </h1>
               <div className="flex items-center justify-center">
-                <button className="flex px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600" onClick={Connect}>
+                <button
+                  className="flex px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600"
+                  onClick={Connect}
+                >
                   Connect{" "}
                   <img src={Metamask} alt="MetaMask" className="ml-2 w-6 h-6" />
                 </button>
