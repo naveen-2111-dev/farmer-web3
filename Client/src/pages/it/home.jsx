@@ -50,10 +50,9 @@ const Home = () => {
   }
 
   const formatPrice = (price) => {
-    if (!price) return 1;
+    if (!price) return "0";
     const priceInEther = ethers.formatEther(price);
-    const Eth = priceInEther / 10 ** 18;
-    return Number(Eth).toString();
+    return priceInEther.toString();
   };
 
   return (
@@ -78,12 +77,31 @@ const Home = () => {
                     <div className="flex items-center justify-between w-full mb-4">
                       <button
                         className="bg-blue-500 text-white py-2 px-4 rounded"
-                        onClick={() => {
-                          const priceInWei = ethers.parseEther(
-                            formatPrice(prod.price)
-                          );
+                        onClick={async () => {
+                          try {
+                            const formattedPrice = formatPrice(prod.price);
+                            console.log(
+                              "Formatted price for conversion:",
+                              formattedPrice
+                            );
 
-                          BuyerOfProduct(prod.productId, kg, priceInWei);
+                            const totalPriceInEther = (
+                              parseFloat(formattedPrice) * kg
+                            ).toString(); 
+                            const priceInWei =
+                              ethers.parseEther(totalPriceInEther);
+
+                            await BuyerOfProduct(
+                              prod.productId,
+                              kg,
+                              priceInWei
+                            );
+                          } catch (err) {
+                            console.error("Error purchasing product:", err);
+                            alert(
+                              "An error occurred while trying to buy the product."
+                            );
+                          }
                         }}
                       >
                         Buy

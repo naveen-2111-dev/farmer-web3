@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { ethers, getAddress, parseEther, toNumber } from "ethers";
-import Abi from "../Json/contract.json";
+import Abi from "../Json/contract.json"; // Abi imported here
 import CryptoJS from "crypto-js";
 
 const ContraContext = createContext();
@@ -43,6 +43,7 @@ export const ContextProvider = ({ children }) => {
       window.localStorage.setItem("Connected", "true");
     }
   };
+
   // Connect function
   const Connect = async () => {
     try {
@@ -72,12 +73,12 @@ export const ContextProvider = ({ children }) => {
       console.error("Error connecting to MetaMask", err);
     }
   };
-  //
+
   useEffect(() => {
     if (signer) {
       const contractInstance = new ethers.Contract(
         contractAddress,
-        Abi.abi,
+        Abi.abi, // Using Abi.abi for the contract ABI
         signer
       );
       setContract(contractInstance);
@@ -85,30 +86,8 @@ export const ContextProvider = ({ children }) => {
     }
   }, [signer]);
 
-  // contract interaction
-  //
-  //
-  //
-  //
-  //
-  //
-  //
   // Add Products
-
-  // string memory _image,
-  //       string memory _Desc,
-  //       uint256 _stock,
-  //       string memory _title,
-  //       uint256 _price,
-  //       string memory _typeofprod
-  const AddProductss = async (
-    _image,
-    _desc,
-    _stock,
-    _title,
-    _price,
-    _typeof
-  ) => {
+  const AddProductss = async (_image, _desc, _stock, _title, _price, _typeof) => {
     try {
       if (!contract) {
         console.log("contract not initialized");
@@ -124,47 +103,24 @@ export const ContextProvider = ({ children }) => {
         _typeof
       );
       await tx.wait();
-      console.log("product added succesfully");
+      console.log("product added successfully");
     } catch (err) {
       console.log("error in adding prod context line 140", err);
     }
   };
 
-  // contract interaction
-  //
-  //
-  //
-
-  //
-  //
-  //
-  // GetProducts
-  // string memory _image,
-  //       string memory _Desc,
-  //       uint256 _stock,
-  //       string memory _title,
-  //       uint256 _price,
-  //       string memory _typeofprod
-
-  // id: productCount,
-  //           Image: _image,
-  //           Description: _Desc,
-  //           Stock: _stock,
-  //           Title: _title,
-  //           Price: _price,
-  //           Farmer: payable(msg.sender),
-  //           TypeOfProduct: _typeofprod,
-  //           StockLeft: _stock
-
+  // Get Products
   const AllProducts = async () => {
     try {
       if (contract) {
         const Products = await contract.GetAllProducts();
+        console.log("Raw Products:", Products);
+
         const productData = Products.map((productProxy, i) => ({
           description: productProxy.Description,
           stock: productProxy.Stock,
           title: productProxy.Title,
-          price: parseEther(productProxy.Price.toString()),
+          price: productProxy.Price.toString(),
           address: productProxy.Farmer,
           ProductType: productProxy.TypeOfProduct,
           stockleft: productProxy.StockLeft,
@@ -174,38 +130,21 @@ export const ContextProvider = ({ children }) => {
 
         return productData;
       } else {
-        console.log("contract not initialized from Allprod line 134");
+        console.log("Contract not initialized from Allprod line 134");
       }
     } catch (err) {
-      console.log("error in getting prod context line 135", err);
+      console.log("Error in getting products context line 135", err);
     }
   };
 
-  // contract interaction
-  //
-  //
-  //
-  //
-  //
-  // Buy products
-
-  const BuyerOfProduct = async (_idOfProduct, _kilogram, amount) => {
-    if (contract) {
-      try {
-        await provider.send("eth_requestAccounts", []);
-        const transaction = await contract.Buyer(_idOfProduct, _kilogram, {
-          value: amount,
-        });
-        await transaction.wait();
-        alert("product bought successfully !!");
-      } catch (err) {
-        console.error("from context line 158", err);
-      }
-    } else {
-      console.log("contract not initialized line 165");
+  const BuyerOfProduct = async (_idOfProduct, _kilogram, price) => {
+    try{
+      
+    }catch(err){
+      console.log(err)
     }
   };
-
+  
   const GetMyProducts = async () => {
     try {
       const AllProductsInBlock = await AllProducts();
@@ -215,7 +154,7 @@ export const ContextProvider = ({ children }) => {
 
       return myProducts;
     } catch (err) {
-      console.log("error in gettiing products error from context", err);
+      console.log("error in getting products error from context", err);
     }
   };
 
