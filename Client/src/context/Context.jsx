@@ -149,7 +149,10 @@ export const ContextProvider = ({ children }) => {
 
   const BuyerOfProduct = async (productId, kilogram, pricePerUnit) => {
     try {
-      const totalPrice = ethers.parseEther((pricePerUnit * kilogram).toString());
+      const totalPriceInEther = (Number(pricePerUnit) * Number(kilogram)).toString();
+      
+      const totalPrice = ethers.parseEther(totalPriceInEther);
+      
       const tx = await contract.Buyer(productId, kilogram, { value: totalPrice });
       await tx.wait();
       console.log("Product purchased successfully. Transaction hash:", tx.hash);
@@ -157,6 +160,7 @@ export const ContextProvider = ({ children }) => {
       console.error("Error purchasing product:", error);
     }
   };
+  
   
   const GetMyProducts = async () => {
     try {
