@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import Navbar from "../../components/Navbar";
 import Meta from "../../assets/image.png";
 import Metamask from "../../assets/meta.png";
-import Farm from "../../assets/cont.png";
+import Farm from "../../assets/webapp.svg";
 import { UseContractProvider } from "../../context/Context";
 
 const Home = () => {
@@ -128,7 +128,7 @@ const Home = () => {
               <img
                 src={Farm}
                 alt="Farm"
-                className="mx-auto bg-transparent mb-20"
+                className="mx-auto bg-transparent mb-14"
               />
               <h1 className="text-xl lg:text-2xl font-semibold mb-4 w-40 sm:w-40 lg:w-96 md:w-60">
                 {" "}

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { ethers, getAddress, parseEther, toNumber } from "ethers";
-import Abi from "../Json/contract.json"; // Abi imported here
+import Abi from "../Json/contract.json"; 
 import CryptoJS from "crypto-js";
 
 const ContraContext = createContext();
@@ -18,6 +18,8 @@ export const ContextProvider = ({ children }) => {
   const contractAddress = "0xe83aaf495e3e764e748c8d863a920db068821fe5";
   const SECRET_KEY =
     "6b86d8ec0028179ad97a5fb46b13457731a7c8d0ff1c40e83b9d0df43250e233";
+  const [veg,setveg]= useState([]);
+  const [fert, setfert] = useState([]);
 
   useEffect(() => {
     if (!window.ethereum) {
@@ -31,13 +33,21 @@ export const ContextProvider = ({ children }) => {
     return () => clearTimeout(iconTimer);
   }, []);
 
-  // Encrypt and Decrypt functions
+  useEffect(() => {
+    const checkConnection = async () => {
+      const connected = window.localStorage.getItem("Connected");
+      if (connected === "true") {
+        await Connect(); 
+      }
+    };
+    checkConnection();
+  }, []); 
+
   const Encrypt = (textToEncrypt) =>
     CryptoJS.AES.encrypt(textToEncrypt, SECRET_KEY).toString();
   const Decrypt = (textToDecrypt) =>
     CryptoJS.AES.decrypt(textToDecrypt, SECRET_KEY).toString(CryptoJS.enc.Utf8);
 
-  // Store values in localStorage
   const storeValuesInLocalStorage = () => {
     if (isConnected) {
       window.localStorage.setItem("Connected", "true");
@@ -78,7 +88,7 @@ export const ContextProvider = ({ children }) => {
     if (signer) {
       const contractInstance = new ethers.Contract(
         contractAddress,
-        Abi.abi, // Using Abi.abi for the contract ABI
+        Abi.abi, 
         signer
       );
       setContract(contractInstance);
@@ -137,11 +147,14 @@ export const ContextProvider = ({ children }) => {
     }
   };
 
-  const BuyerOfProduct = async (_idOfProduct, _kilogram, price) => {
-    try{
-      
-    }catch(err){
-      console.log(err)
+  const BuyerOfProduct = async (productId, kilogram, pricePerUnit) => {
+    try {
+      const totalPrice = ethers.parseEther((pricePerUnit * kilogram).toString());
+      const tx = await contract.Buyer(productId, kilogram, { value: totalPrice });
+      await tx.wait();
+      console.log("Product purchased successfully. Transaction hash:", tx.hash);
+    } catch (error) {
+      console.error("Error purchasing product:", error);
     }
   };
   
@@ -158,6 +171,72 @@ export const ContextProvider = ({ children }) => {
     }
   };
 
+  //vegitables
+
+  const Vegitables = async () => {
+    try {
+      if (contract) {
+        const Products = await contract.GetAllProducts();
+  
+        const vegetableProducts = Products.filter(
+          (productProxy) => productProxy.TypeOfProduct === "Vegitable"
+        );
+        setveg(vegetableProducts)
+  
+        const productData = veg.map((veg, i) => ({
+          description: veg.Description,
+          stock: veg.Stock,
+          title: veg.Title,
+          price: veg.Price.toString(),
+          address: veg.Farmer,
+          ProductType: veg.TypeOfProduct,
+          stockleft: veg.StockLeft,
+          image: veg.Image,
+          productId: veg.id || i,
+        }));
+  
+        return productData;
+      } else {
+        console.log("Contract not initialized in Vegitables function.");
+      }
+    } catch (err) {
+      console.error("Error in Vegitables function:", err);
+      throw err;
+    }
+  };
+
+  const Fertilizers = async () => {
+    try {
+      if (contract) {
+        const Products = await contract.GetAllProducts();
+  
+        const Ferti = Products.filter(
+          (productProxy) => productProxy.TypeOfProduct === "Fertilizers"
+        );
+        setfert(Ferti)
+  
+        const productData = fert.map((veg, i) => ({
+          description: veg.Description,
+          stock: veg.Stock,
+          title: veg.Title,
+          price: veg.Price.toString(),
+          address: veg.Farmer,
+          ProductType: veg.TypeOfProduct,
+          stockleft: veg.StockLeft,
+          image: veg.Image,
+          productId: veg.id || i,
+        }));
+  
+        return productData;
+      } else {
+        console.log("Contract not initialized in Vegitables function.");
+      }
+    } catch (err) {
+      console.error("Error in Vegitables function:", err);
+      throw err;
+    }
+  };
+  
   const values = {
     Connect,
     isConnected,
@@ -169,6 +248,8 @@ export const ContextProvider = ({ children }) => {
     Side,
     setSide,
     GetMyProducts,
+    Vegitables,
+    Fertilizers
   };
 
   return (
