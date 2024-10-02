@@ -16,7 +16,6 @@ const Navbar = () => {
     if (isConnected) {
       navigate("/auth");
     } else {
-      // Optional: Display an alert or message to the user
       alert("You need to connect your wallet to access this page.");
     }
   };
@@ -59,7 +58,6 @@ const Navbar = () => {
 
   return (
     <div className="bg-black text-white flex justify-between items-center p-4 relative box">
-      {/* Logo and Title */}
       <div className="flex items-center">
         <img src={Logo} className="h-12" alt="Logo" />
         <div className="ml-3">
@@ -68,7 +66,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Navbar Elements for Large Screens */}
       <div className="hidden lg:flex gap-5 items-center">
         <div
           className={active === "All" ? "bg-bg p-2 rounded-lg" : ""}
@@ -96,7 +93,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Buttons for Large Screens */}
       <div className="hidden lg:flex gap-5">
         <button
           className="buttonclass flex items-center gap-2 bg-bg p-3 text-xs rounded-lg font-bold"
@@ -121,13 +117,12 @@ const Navbar = () => {
         <button
           className="buttonclass flex items-center gap-2 bg-bg p-3 text-xs rounded-lg font-bold"
           onClick={handleNavigation}
-          disabled={!isConnected} // Disable button if not connected
+          disabled={!isConnected}
         >
           Farmer <img src={plus} className="h-5" alt="Plus" />
         </button>
       </div>
 
-      {/* Mobile Menu Button */}
       <div className="lg:hidden">
         <button onClick={toggleMenu} className="text-white bg-transparent">
           <svg
@@ -147,7 +142,6 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="lg:hidden absolute top-16 text-center left-0 w-full bg-black text-white">
           <div className="flex flex-col items-center gap-5 p-4">
@@ -202,7 +196,7 @@ const Navbar = () => {
               <button
                 className="buttonclass flex items-center gap-2 bg-bg p-3 text-xs rounded-lg font-bold"
                 onClick={handleNavigation}
-                disabled={!isConnected} // Disable button if not connected
+                disabled={!isConnected}
               >
                 Farmer <img src={plus} className="h-5" alt="Plus" />
               </button>
